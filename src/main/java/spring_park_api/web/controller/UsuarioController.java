@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import spring_park_api.entity.Usuario;
 import spring_park_api.service.UsuarioService;
+import spring_park_api.web.dto.UsuarioCreateDTO;
+import spring_park_api.web.dto.UsuarioResponseDTO;
+import spring_park_api.web.dto.mapper.UsuarioMapper;
 
 @RestController
 @RequestMapping(value = "api/v1/usuarios")
@@ -24,9 +27,9 @@ public class UsuarioController {
 	private UsuarioService usuarioService;
 	
 	@PostMapping
-	public ResponseEntity<Usuario> create(@RequestBody Usuario usuario){
-		Usuario user = usuarioService.criar(usuario);
-		return ResponseEntity.status(HttpStatus.CREATED).body(user);
+	public ResponseEntity<UsuarioResponseDTO> create(@RequestBody UsuarioCreateDTO creatDto){
+		Usuario user = usuarioService.criar(UsuarioMapper.toUsuario(creatDto));
+		return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioMapper.toDto(user));
 	}
 	
 	@GetMapping(value = "/{id}")
