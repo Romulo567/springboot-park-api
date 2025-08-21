@@ -1,5 +1,8 @@
 package spring_park_api.web.dto.mapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 
@@ -25,5 +28,9 @@ public class UsuarioMapper {
 		ModelMapper mapper = new ModelMapper();
 		mapper.addMappings(props);
 		return mapper.map(usuario, UsuarioResponseDTO.class);
+	}
+	
+	public static List<UsuarioResponseDTO> toListDto(List<Usuario> usuarios){
+		return usuarios.stream().map(user -> toDto(user)).collect(Collectors.toList());
 	}
 }

@@ -41,13 +41,13 @@ public class UsuarioController {
 	
 	@PatchMapping(value = "/{id}")
 	public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody UsuarioSenhaDto dto){
-		Usuario user = usuarioService.atualizarSenha(id, dto.getSenhaAtual(), dto.getNovaSenha(), dto.getConfirmaSenha());
+		usuarioService.atualizarSenha(id, dto.getSenhaAtual(), dto.getNovaSenha(), dto.getConfirmaSenha());
 		return ResponseEntity.noContent().build();
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Usuario>> readAll(){
+	public ResponseEntity<List<UsuarioResponseDTO>> readAll(){
 		List<Usuario> users = usuarioService.buscarTodos();
-		return ResponseEntity.ok().body(users);
+		return ResponseEntity.ok(UsuarioMapper.toListDto(users));
 	}
 }
