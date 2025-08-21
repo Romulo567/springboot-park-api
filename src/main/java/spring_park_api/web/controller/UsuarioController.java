@@ -17,6 +17,7 @@ import spring_park_api.entity.Usuario;
 import spring_park_api.service.UsuarioService;
 import spring_park_api.web.dto.UsuarioCreateDTO;
 import spring_park_api.web.dto.UsuarioResponseDTO;
+import spring_park_api.web.dto.UsuarioSenhaDto;
 import spring_park_api.web.dto.mapper.UsuarioMapper;
 
 @RestController
@@ -39,9 +40,9 @@ public class UsuarioController {
 	}
 	
 	@PatchMapping(value = "/{id}")
-	public ResponseEntity<Usuario> updatePassword(@PathVariable Long id, @RequestBody Usuario usuario){
-		Usuario user = usuarioService.atualizarSenha(id, usuario.getPassword());
-		return ResponseEntity.ok(user);
+	public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody UsuarioSenhaDto dto){
+		Usuario user = usuarioService.atualizarSenha(id, dto.getSenhaAtual(), dto.getNovaSenha(), dto.getConfirmaSenha());
+		return ResponseEntity.noContent().build();
 	}
 	
 	@GetMapping
