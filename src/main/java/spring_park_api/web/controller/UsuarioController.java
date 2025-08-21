@@ -1,5 +1,7 @@
 package spring_park_api.web.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,19 +25,25 @@ public class UsuarioController {
 	
 	@PostMapping
 	public ResponseEntity<Usuario> create(@RequestBody Usuario usuario){
-		usuario = usuarioService.criar(usuario);
-		return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
+		Usuario user = usuarioService.criar(usuario);
+		return ResponseEntity.status(HttpStatus.CREATED).body(user);
 	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Usuario> readById(@PathVariable Long id){
 		Usuario user = usuarioService.buscarPorId(id);
-		return ResponseEntity.ok().body(user);
+		return ResponseEntity.ok(user);
 	}
 	
 	@PatchMapping(value = "/{id}")
 	public ResponseEntity<Usuario> updatePassword(@PathVariable Long id, @RequestBody Usuario usuario){
-		usuario = usuarioService.atualizarSenha(id, usuario.getPassword());
-		return ResponseEntity.ok().body(usuario);
+		Usuario user = usuarioService.atualizarSenha(id, usuario.getPassword());
+		return ResponseEntity.ok(user);
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<Usuario>> readAll(){
+		List<Usuario> users = usuarioService.buscarTodos();
+		return ResponseEntity.ok().body(users);
 	}
 }
