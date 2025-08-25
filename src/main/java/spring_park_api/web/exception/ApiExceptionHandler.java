@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import jakarta.servlet.http.HttpServletRequest;
 import spring_park_api.exception.EntityNotFoundException;
+import spring_park_api.exception.PasswordInvalidException;
 import spring_park_api.exception.UserNameUniqueViolationException;
 
 @RestControllerAdvice
@@ -37,5 +38,13 @@ public class ApiExceptionHandler {
 				.status(HttpStatus.NOT_FOUND)
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(new ErrorMessage(request, HttpStatus.NOT_FOUND, ex.getMessage()));
+	}
+	
+	@ExceptionHandler(PasswordInvalidException.class)
+	public ResponseEntity<ErrorMessage> passwordInvalideException(RuntimeException ex, HttpServletRequest request){
+		return ResponseEntity
+				.status(HttpStatus.BAD_REQUEST)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, ex.getMessage()));
 	}
 }
