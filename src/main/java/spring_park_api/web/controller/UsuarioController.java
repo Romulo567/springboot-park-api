@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import spring_park_api.entity.Usuario;
 import spring_park_api.service.UsuarioService;
 import spring_park_api.web.dto.UsuarioCreateDTO;
@@ -28,7 +29,7 @@ public class UsuarioController {
 	private UsuarioService usuarioService;
 	
 	@PostMapping
-	public ResponseEntity<UsuarioResponseDTO> create(@RequestBody UsuarioCreateDTO creatDto){
+	public ResponseEntity<UsuarioResponseDTO> create(@Valid @RequestBody UsuarioCreateDTO creatDto){
 		Usuario user = usuarioService.criar(UsuarioMapper.toUsuario(creatDto));
 		return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioMapper.toDto(user));
 	}
@@ -40,7 +41,7 @@ public class UsuarioController {
 	}
 	
 	@PatchMapping(value = "/{id}")
-	public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody UsuarioSenhaDto dto){
+	public ResponseEntity<Void> updatePassword(@PathVariable Long id, @Valid @RequestBody UsuarioSenhaDto dto){
 		usuarioService.atualizarSenha(id, dto.getSenhaAtual(), dto.getNovaSenha(), dto.getConfirmaSenha());
 		return ResponseEntity.noContent().build();
 	}
