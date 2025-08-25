@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import jakarta.servlet.http.HttpServletRequest;
+import spring_park_api.exception.UserNameUniqueViolationException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -19,5 +20,13 @@ public class ApiExceptionHandler {
 				.status(HttpStatus.UNPROCESSABLE_ENTITY)
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Campo(s) invalido(s)", result));
+	}
+	
+	@ExceptionHandler(UserNameUniqueViolationException.class)
+	public ResponseEntity<ErrorMessage> userNameUniqueViolationException(RuntimeException ex, HttpServletRequest request){
+		return ResponseEntity
+				.status(HttpStatus.CONFLICT)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(new ErrorMessage(request, HttpStatus.CONFLICT, ex.getMessage()));
 	}
 }

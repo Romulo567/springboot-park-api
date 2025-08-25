@@ -3,10 +3,12 @@ package spring_park_api.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import spring_park_api.entity.Usuario;
+import spring_park_api.exception.UserNameUniqueViolationException;
 import spring_park_api.repository.UsuarioRepository;
 
 @Service
@@ -17,7 +19,11 @@ public class UsuarioService {
 
 	@Transactional
 	public Usuario criar(Usuario usuario) {
+		try {
 		return usuarioRepository.save(usuario);
+		} catch(DataIntegrityViolationException e) {
+			throw new UserNameUniqueViolationException(String.format("Username {%s} ja cadastrado", usuario.getUsername()));
+		}
 	}
 	
 	@Transactional(readOnly = true)
