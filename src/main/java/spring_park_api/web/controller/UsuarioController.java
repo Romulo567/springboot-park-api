@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -78,6 +79,12 @@ public class UsuarioController {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@Operation(summary = "Listar todos os usuarios", description = "Listar todos os usuarios cadastrados",
+			responses = {
+				@ApiResponse(responseCode = "200", description = "Lista com todos os usuarios cadastrados", 
+						content = @Content(mediaType = "application/json",
+						array = @ArraySchema(schema = @Schema(implementation = UsuarioResponseDTO.class))))
+				})
 	@GetMapping
 	public ResponseEntity<List<UsuarioResponseDTO>> readAll(){
 		List<Usuario> users = usuarioService.buscarTodos();
