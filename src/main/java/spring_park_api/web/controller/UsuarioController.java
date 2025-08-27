@@ -84,7 +84,7 @@ public class UsuarioController {
 				@ApiResponse(responseCode = "200", description = "Lista com todos os usuarios cadastrados", 
 						content = @Content(mediaType = "application/json",
 						array = @ArraySchema(schema = @Schema(implementation = UsuarioResponseDTO.class))))
-				})
+				}) 
 	@GetMapping
 	public ResponseEntity<List<UsuarioResponseDTO>> readAll(){
 		List<Usuario> users = usuarioService.buscarTodos();
