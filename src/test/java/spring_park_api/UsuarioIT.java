@@ -9,6 +9,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import spring_park_api.web.dto.UsuarioCreateDTO;
 import spring_park_api.web.dto.UsuarioResponseDTO;
+import spring_park_api.web.dto.UsuarioSenhaDto;
 import spring_park_api.web.exception.ErrorMessage;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -167,5 +168,104 @@ public class UsuarioIT {
 		
 		org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
 		org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(404);
+	}
+	
+	@Test
+	public void editarSenha_ComDadosdValidos_RetornarStatus404() {
+		 testClient
+			.patch()
+			.uri("/api/v1/usuarios/100")
+			.contentType(MediaType.APPLICATION_JSON)
+			.bodyValue(new UsuarioSenhaDto("123456", "123456", "123456"))
+			.exchange()
+			.expectStatus()
+			.isNoContent();
+	}
+	
+	@Test
+	public void editarSenha_ComIdInexistente_RetornarErrorMessageComStatus404() {
+		ErrorMessage responseBody = testClient
+			.patch()
+			.uri("/api/v1/usuarios/0")
+			.contentType(MediaType.APPLICATION_JSON)
+			.bodyValue(new UsuarioSenhaDto("123456", "123456", "123456"))
+			.exchange()
+			.expectStatus().isNotFound()
+			.expectBody(ErrorMessage.class)
+			.returnResult().getResponseBody();
+		
+		org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(404);
+	}
+	
+	@Test
+	public void editarSenha_ComCamposInvalidos_RetornarErrorMessageComStatus422() {
+		ErrorMessage responseBody = testClient
+			.patch()
+			.uri("/api/v1/usuarios/100")
+			.contentType(MediaType.APPLICATION_JSON)
+			.bodyValue(new UsuarioSenhaDto("", "", ""))
+			.exchange()
+			.expectStatus().isEqualTo(422)
+			.expectBody(ErrorMessage.class)
+			.returnResult().getResponseBody();
+		
+		org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(422);
+		
+		responseBody = testClient
+				.patch()
+				.uri("/api/v1/usuarios/100")
+				.contentType(MediaType.APPLICATION_JSON)
+				.bodyValue(new UsuarioSenhaDto("12345", "12345", "12345"))
+				.exchange()
+				.expectStatus().isEqualTo(422)
+				.expectBody(ErrorMessage.class)
+				.returnResult().getResponseBody();
+			
+			org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+			org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(422);
+			
+			responseBody = testClient
+					.patch()
+					.uri("/api/v1/usuarios/100")
+					.contentType(MediaType.APPLICATION_JSON)
+					.bodyValue(new UsuarioSenhaDto("12345678", "12345678", ""))
+					.exchange()
+					.expectStatus().isEqualTo(422)
+					.expectBody(ErrorMessage.class)
+					.returnResult().getResponseBody();
+				
+				org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+				org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(422);
+	}
+	
+	@Test
+	public void editarSenha_ComSenhasInvalidos_RetornarErrorMessageComStatus400() {
+		ErrorMessage responseBody = testClient
+			.patch()
+			.uri("/api/v1/usuarios/100")
+			.contentType(MediaType.APPLICATION_JSON)
+			.bodyValue(new UsuarioSenhaDto("123456", "123456", "000000"))
+			.exchange()
+			.expectStatus().isEqualTo(400)
+			.expectBody(ErrorMessage.class)
+			.returnResult().getResponseBody();
+		
+		org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(400);
+		
+		responseBody = testClient
+				.patch()
+				.uri("/api/v1/usuarios/100")
+				.contentType(MediaType.APPLICATION_JSON)
+				.bodyValue(new UsuarioSenhaDto("000000", "123456", "123456"))
+				.exchange()
+				.expectStatus().isEqualTo(400)
+				.expectBody(ErrorMessage.class)
+				.returnResult().getResponseBody();
+			
+			org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+			org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(400);
 	}
 }
