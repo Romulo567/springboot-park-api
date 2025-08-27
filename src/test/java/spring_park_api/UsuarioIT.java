@@ -1,5 +1,7 @@
 package spring_park_api;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -267,5 +269,19 @@ public class UsuarioIT {
 			
 			org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
 			org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(400);
+	}
+	
+	@Test
+	public void listarUsuarios_SemQualquerParametro_RetornarListaDeUsuariosComStatus200() {
+		List<UsuarioResponseDTO> responseBody = testClient
+				.get()
+				.uri("/api/v1/usuarios")
+				.exchange()
+				.expectStatus().isOk()
+				.expectBodyList(UsuarioResponseDTO.class)
+				.returnResult().getResponseBody();
+		
+		org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(responseBody.size()).isEqualTo(3);
 	}
 }
