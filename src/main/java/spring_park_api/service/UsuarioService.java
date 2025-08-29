@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +20,14 @@ public class UsuarioService {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+	
+	private PasswordEncoder passwordEcoder;
 
 	@Transactional
 	public Usuario criar(Usuario usuario) {
 		try {
-		return usuarioRepository.save(usuario);
+			usuario.setPassword(passwordEcoder.encode(usuario.getPassword()));
+			return usuarioRepository.save(usuario);
 		} catch(DataIntegrityViolationException e) {
 			throw new UserNameUniqueViolationException(String.format("Username {%s} ja cadastrado", usuario.getUsername()));
 		}
@@ -41,10 +45,11 @@ public class UsuarioService {
 		}
 		
 		Usuario user = buscarPorId(id);
-		if(!user.getPassword().equals(senhaAtual)) {
+		if(!passwordEcoder.matches(senhaAtual, user.getPassword())) {
 			throw new PasswordInvalidException("Sua senha não confere");
 		}
-		user.setPassword(novaSenha);
+		
+		user.setPassword(passwordEcoder.encode(novaSenha));
 		return user;
 	}
 
