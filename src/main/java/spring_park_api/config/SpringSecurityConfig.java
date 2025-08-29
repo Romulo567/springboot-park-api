@@ -27,11 +27,11 @@ public class SpringSecurityConfig {
 				.csrf(csrf -> csrf.disable())
 				.formLogin(form -> form.disable())
 				.httpBasic(basic -> basic.disable())
-				.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.POST, "api/v1/usuarios").permitAll()
-						.requestMatchers(HttpMethod.POST, "api/v1/auth").permitAll()
-						.anyRequest().authenticated()
-				).sessionManagement(
+				.authorizeHttpRequests(auth -> {
+						 auth.requestMatchers(HttpMethod.POST, "/api/v1/usuarios").permitAll();
+						 auth.requestMatchers(HttpMethod.POST, "/api/v1/auth").permitAll();
+						 auth.anyRequest().authenticated();
+				}).sessionManagement(
 						session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				).addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.build();
@@ -42,11 +42,13 @@ public class SpringSecurityConfig {
 		return new JwtAuthorizationFilter();
 	}
 	
-	@Bean PasswordEncoder passwordEncoder() {
+	@Bean
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	
-	@Bean AuthenticationManager authenticationMenager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+	@Bean 
+	AuthenticationManager authenticationMenager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 }

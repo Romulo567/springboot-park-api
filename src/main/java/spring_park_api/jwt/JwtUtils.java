@@ -79,8 +79,9 @@ public class JwtUtils {
 			.verifyWith(generateKey())
 			.build()
 			.parseSignedClaims(refactorToken(token));
+			return true;
 		} catch(JwtException e) {
-			log.error(String.format("Token invalido", e.getMessage()));
+			log.error("Erro na validação do Token JWT: {}", e.getMessage());
 		}
 		return false;
 	}

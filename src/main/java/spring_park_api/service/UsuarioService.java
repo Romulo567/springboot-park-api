@@ -21,6 +21,7 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	
+	@Autowired
 	private PasswordEncoder passwordEcoder;
 
 	@Transactional
