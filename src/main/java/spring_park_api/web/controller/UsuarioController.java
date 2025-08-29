@@ -28,7 +28,7 @@ import spring_park_api.web.dto.UsuarioSenhaDto;
 import spring_park_api.web.dto.mapper.UsuarioMapper;
 import spring_park_api.web.exception.ErrorMessage;
 
-@Tag(name = "Usuarios", description = "Coném todas as operações relativas aos recursos para cadastro, edição e leitura de um usuario")
+@Tag(name = "Usuarios", description = "Contém todas as operações relativas aos recursos para cadastro, edição e leitura de um usuario")
 @RestController
 @RequestMapping(value = "api/v1/usuarios")
 public class UsuarioController {
