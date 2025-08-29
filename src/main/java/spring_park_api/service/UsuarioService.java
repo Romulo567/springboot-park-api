@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import spring_park_api.entity.Usuario;
+import spring_park_api.entity.Usuario.Role;
 import spring_park_api.exception.EntityNotFoundException;
 import spring_park_api.exception.PasswordInvalidException;
 import spring_park_api.exception.UserNameUniqueViolationException;
@@ -50,5 +51,15 @@ public class UsuarioService {
 	@Transactional(readOnly = true)
 	public List<Usuario> buscarTodos() {
 		return usuarioRepository.findAll();
+	}
+	
+	@Transactional(readOnly = true)
+	public Usuario buscarPorUsername(String username) {
+		return usuarioRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException(String.format("Usuario com %s não encontrado", username)));
+	}
+
+	@Transactional(readOnly = true)
+	public Role buscarRolePorUsername(String username) {
+		return usuarioRepository.findRoleByUsername(username);
 	}
 }
