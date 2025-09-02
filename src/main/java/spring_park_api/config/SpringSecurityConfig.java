@@ -28,6 +28,14 @@ import spring_park_api.web.exception.ErrorMessage;
 @EnableWebMvc
 @Configuration
 public class SpringSecurityConfig {
+	
+	private static final String[] DOCUMENTATION_OPENAPI = {
+	        "/docs/index.html",
+	        "/docs-park.html", "/docs-park/**",
+	        "/v3/api-docs/**",
+	        "/swagger-ui-custom.html", "/swagger-ui.html", "/swagger-ui/**",
+	        "/**.html", "/webjars/**", "/configuration/**", "/swagger-resources/**"
+	};
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthorizationFilter jwtAuthorizationFilter) throws Exception {
@@ -38,6 +46,7 @@ public class SpringSecurityConfig {
 	        .authorizeHttpRequests(auth -> {
 	            auth.requestMatchers(HttpMethod.POST, "/api/v1/usuarios").permitAll();
 	            auth.requestMatchers(HttpMethod.POST, "/api/v1/auth").permitAll();
+	            auth.requestMatchers(DOCUMENTATION_OPENAPI).permitAll();
 	            auth.anyRequest().authenticated();
 	        })
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
