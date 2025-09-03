@@ -9,6 +9,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import spring_park_api.jwt.JwtToken;
 import spring_park_api.web.dto.UsuarioLoginDto;
+import spring_park_api.web.exception.ErrorMessage;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "/sql/usuarios/usuarios-insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -21,15 +22,44 @@ public class AutenticacaoIT {
 		@Test
 		public void Autenticar_ComCredenciasValidas_RetornarTokenComStatus200() {
 				JwtToken responseBody = testClient
-							.post()
-							.uri("/api/v1/auth")
-							.contentType(MediaType.APPLICATION_JSON)
-							.bodyValue(new UsuarioLoginDto("ana@gmail.com", "123456"))
-							.exchange()
-							.expectStatus().isOk()
-							.expectBody(JwtToken.class)
-							.returnResult().getResponseBody();
+								.post()
+								.uri("/api/v1/auth")
+								.contentType(MediaType.APPLICATION_JSON)
+								.bodyValue(new UsuarioLoginDto("ana@gmail.com", "123456"))
+								.exchange()
+								.expectStatus().isOk()
+								.expectBody(JwtToken.class)
+								.returnResult().getResponseBody();
 				
 				org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+		}
+		
+		@Test
+		public void Autenticar_ComCredenciasInvalidas_RetornarErrorMessageComStatus400() {
+				ErrorMessage responseBody = testClient
+								.post()
+								.uri("/api/v1/auth")
+								.contentType(MediaType.APPLICATION_JSON)
+								.bodyValue(new UsuarioLoginDto("invalido@gmail.com", "123456"))
+								.exchange()
+								.expectStatus().isBadRequest()
+								.expectBody(ErrorMessage.class)
+								.returnResult().getResponseBody();
+				
+				org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+				org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(400);
+				
+				responseBody = testClient
+								.post()
+								.uri("/api/v1/auth")
+								.contentType(MediaType.APPLICATION_JSON)
+								.bodyValue(new UsuarioLoginDto("ana@gmail.com", "000000"))
+								.exchange()
+								.expectStatus().isBadRequest()
+								.expectBody(ErrorMessage.class)
+								.returnResult().getResponseBody();
+			
+			org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+			org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(400);
 		}
 	}
