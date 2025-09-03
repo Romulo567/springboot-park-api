@@ -352,6 +352,7 @@ public class UsuarioIT {
 		List<UsuarioResponseDTO> responseBody = testClient
 				.get()
 				.uri("/api/v1/usuarios")
+				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@gmail.com", "123456"))
 				.exchange()
 				.expectStatus().isOk()
 				.expectBodyList(UsuarioResponseDTO.class)
