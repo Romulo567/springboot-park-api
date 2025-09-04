@@ -6,7 +6,7 @@ import spring_park_api.entity.Cliente;
 import spring_park_api.web.dto.ClienteCreateDto;
 import spring_park_api.web.dto.ClienteResponseDto;
 
-public class ClienteMapperDto {
+public class ClienteMapper {
 
 	public static Cliente toCliente(ClienteCreateDto dto) {
 		return new ModelMapper().map(dto, Cliente.class);
@@ -16,7 +16,7 @@ public class ClienteMapperDto {
 		return new ModelMapper().map(cliente, ClienteResponseDto.class);
 	}
 
-	private ClienteMapperDto() {
+	private ClienteMapper() {
 	}
 	
 }
