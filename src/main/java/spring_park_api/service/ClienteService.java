@@ -5,7 +5,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.EntityNotFoundException;
 import spring_park_api.entity.Cliente;
 import spring_park_api.exception.CpfUniqueViolationException;
 import spring_park_api.repository.ClienteRepository;
@@ -28,7 +27,7 @@ public class ClienteService {
 	@Transactional(readOnly = true)
 	public Cliente buscarPorId(Long id) {
 		return clienteRepository.findById(id).orElseThrow(
-				()  -> new EntityNotFoundException(String.format("Cliente id=%s não encontrado no sistema", id))
+				()  -> new spring_park_api.exception.EntityNotFoundException(String.format("Cliente id=%s não encontrado no sistema", id))
 		);
 	}
 }

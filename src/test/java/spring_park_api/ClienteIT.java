@@ -118,7 +118,7 @@ public class ClienteIT {
 	}
 	
 	@Test
-	public void buscarCliente_ComIdExistentePeloAdmin_RetornarClienteeComStatus200() {
+	public void buscarCliente_ComIdExistentePeloAdmin_RetornarClienteComStatus200() {
 		ClienteResponseDto responseBody = testeClient
 						.get()
 						.uri("/api/v1/clientes/10")
@@ -130,5 +130,35 @@ public class ClienteIT {
 		
 		org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
 		org.assertj.core.api.Assertions.assertThat(responseBody.getId()).isEqualTo(10);
+	}
+	
+	@Test
+	public void buscarCliente_ComIdInexistentePeloAdmin_RetornarErrorMessageComStatus404() {
+		ErrorMessage responseBody = testeClient
+						.get()
+						.uri("/api/v1/clientes/0")
+						.headers(JwtAuthentication.getHeaderAuthorization(testeClient, "ana@gmail.com", "123456"))
+						.exchange()
+						.expectStatus().isNotFound()
+						.expectBody(ErrorMessage.class)
+						.returnResult().getResponseBody();
+		
+		org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(404);
+	}
+	
+	@Test
+	public void buscarCliente_ComIdExistentePeloCliente_RetornarErrorMessageComStatus403() {
+		ErrorMessage responseBody = testeClient
+						.get()
+						.uri("/api/v1/clientes/0")
+						.headers(JwtAuthentication.getHeaderAuthorization(testeClient, "kelvin@gmail.com", "123456"))
+						.exchange()
+						.expectStatus().isForbidden()
+						.expectBody(ErrorMessage.class)
+						.returnResult().getResponseBody();
+		
+		org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(403);
 	}
 }
