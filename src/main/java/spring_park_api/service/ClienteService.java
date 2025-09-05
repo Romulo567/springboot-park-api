@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
 import spring_park_api.entity.Cliente;
 import spring_park_api.exception.CpfUniqueViolationException;
 import spring_park_api.repository.ClienteRepository;
@@ -15,7 +14,7 @@ public class ClienteService {
 	@Autowired
 	private ClienteRepository clienteRepository;
 
-	@Transactional
+	@org.springframework.transaction.annotation.Transactional
 	public Cliente  criar(Cliente cliente) {
 		try {
 			return clienteRepository.save(cliente);
