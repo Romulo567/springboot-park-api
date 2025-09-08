@@ -21,11 +21,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import spring_park_api.entity.Cliente;
 import spring_park_api.jwt.JwtUserDetails;
+import spring_park_api.repository.projection.ClienteProjection;
 import spring_park_api.service.ClienteService;
 import spring_park_api.service.UsuarioService;
 import spring_park_api.web.dto.ClienteCreateDto;
 import spring_park_api.web.dto.ClienteResponseDto;
+import spring_park_api.web.dto.PageableDto;
 import spring_park_api.web.dto.mapper.ClienteMapper;
+import spring_park_api.web.dto.mapper.PageableMapper;
 import spring_park_api.web.exception.ErrorMessage;
 
 @Tag(name = "Clientes", description =  "Contém todas as operações relativas ao recurso de um cliente")
@@ -79,9 +82,9 @@ public class ClienteController {
 	
 	@GetMapping()
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Page<Cliente>> readAll(Pageable pageable){
-		Page<Cliente> clientes = clienteService.buscarTodos(pageable);
-		return ResponseEntity.ok(clientes);
+	public ResponseEntity<PageableDto> readAll(Pageable pageable){
+		Page<ClienteProjection> clientes = clienteService.buscarTodos(pageable);
+		return ResponseEntity.ok(PageableMapper.toDto(clientes));
 	}
 	
 }

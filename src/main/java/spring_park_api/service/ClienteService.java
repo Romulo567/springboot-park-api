@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import spring_park_api.entity.Cliente;
 import spring_park_api.exception.CpfUniqueViolationException;
 import spring_park_api.repository.ClienteRepository;
+import spring_park_api.repository.projection.ClienteProjection;
 
 @Service
 public class ClienteService {
@@ -35,7 +36,7 @@ public class ClienteService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<Cliente> buscarTodos(Pageable pageable) {
-		return clienteRepository.findAll(pageable);
+	public Page<ClienteProjection> buscarTodos(Pageable pageable) {
+		return clienteRepository.findAllPageable(pageable);
 	}
 }
