@@ -1,6 +1,8 @@
 package spring_park_api.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -75,5 +77,11 @@ public class ClienteController {
 		return ResponseEntity.ok(ClienteMapper.toDto(cliente));
 	}
 	
+	@GetMapping()
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<Page<Cliente>> readAll(Pageable pageable){
+		Page<Cliente> clientes = clienteService.buscarTodos(pageable);
+		return ResponseEntity.ok(clientes);
+	}
 	
 }

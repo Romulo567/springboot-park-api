@@ -1,7 +1,10 @@
 package spring_park_api.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,5 +32,10 @@ public class ClienteService {
 		return clienteRepository.findById(id).orElseThrow(
 				()  -> new spring_park_api.exception.EntityNotFoundException(String.format("Cliente id=%s não encontrado no sistema", id))
 		);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<Cliente> buscarTodos(Pageable pageable) {
+		return clienteRepository.findAll(pageable);
 	}
 }
