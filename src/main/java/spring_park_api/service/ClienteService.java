@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import spring_park_api.entity.Cliente;
 import spring_park_api.exception.CpfUniqueViolationException;
+import spring_park_api.exception.EntityNotFoundException;
 import spring_park_api.repository.ClienteRepository;
 import spring_park_api.repository.projection.ClienteProjection;
 
@@ -31,12 +32,17 @@ public class ClienteService {
 	@Transactional(readOnly = true)
 	public Cliente buscarPorId(Long id) {
 		return clienteRepository.findById(id).orElseThrow(
-				()  -> new spring_park_api.exception.EntityNotFoundException(String.format("Cliente id=%s não encontrado no sistema", id))
+				()  -> new EntityNotFoundException(String.format("Cliente id=%s não encontrado no sistema", id))
 		);
 	}
 
 	@Transactional(readOnly = true)
 	public Page<ClienteProjection> buscarTodos(Pageable pageable) {
 		return clienteRepository.findAllPageable(pageable);
+	}
+
+	@Transactional(readOnly = true)
+	public Cliente buscarPorUsuarioId(Long id) {
+		return clienteRepository.findByUsuarioId(id);
 	}
 }
