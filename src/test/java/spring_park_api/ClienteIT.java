@@ -208,4 +208,36 @@ public class ClienteIT {
 		org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
 		org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(403);
 	}
+	
+	@Test
+	public void buscarClientes_ComDadosDoTokenDeCliente_RetornarClienteStatus200() {
+		ClienteResponseDto responseBody = testeClient
+						.get()
+						.uri("/api/v1/clientes/detalhes")
+						.headers(JwtAuthentication.getHeaderAuthorization(testeClient, "kelvin@gmail.com", "123456"))
+						.exchange()
+						.expectStatus().isOk()
+						.expectBody(ClienteResponseDto.class)
+						.returnResult().getResponseBody();
+		
+		org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(responseBody.getCpf()).isEqualTo("98133219035");
+		org.assertj.core.api.Assertions.assertThat(responseBody.getNome()).isEqualTo("Kelvin Martins");
+		org.assertj.core.api.Assertions.assertThat(responseBody.getId()).isEqualTo(10);
+	}
+	
+	@Test
+	public void buscarClientes_ComDadosDoTokenDeAdmin_RetornarErrorMessageStatus403() {
+		ErrorMessage responseBody = testeClient
+						.get()
+						.uri("/api/v1/clientes/detalhes")
+						.headers(JwtAuthentication.getHeaderAuthorization(testeClient, "ana@gmail.com", "123456"))
+						.exchange()
+						.expectStatus().isForbidden()
+						.expectBody(ErrorMessage.class)
+						.returnResult().getResponseBody();
+		
+		org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(403);
+	}
 }
