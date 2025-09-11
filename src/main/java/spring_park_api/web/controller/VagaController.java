@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import spring_park_api.entity.Vaga;
@@ -38,6 +39,7 @@ public class VagaController {
 	
 	@Operation(summary = "Criar uma nova vaga", description = "Recurso para criar uma nova vaga." +
 			"Requisição exige um bearer token. Acesso restrito a Role='ADMIN'",
+			security = @SecurityRequirement(name = "security"),
 			responses = {
 					@ApiResponse(responseCode = "201", description = "Recurso criado com sucesso",
 							headers = @Header(name = HttpHeaders.LOCATION, description = "URL do recurso criado")),
@@ -45,6 +47,9 @@ public class VagaController {
 							content = @Content(mediaType = "application/json;charset=UTF-8",
 									schema = @Schema(implementation = ErrorMessage.class))),
 					@ApiResponse(responseCode = "422", description = "Recurso não processado por falta de dados ou dados invalidos",
+							content = @Content(mediaType = "application/json;charset=UTF-8",
+									schema = @Schema(implementation = ErrorMessage.class))),
+					@ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de CLIENTE",
 							content = @Content(mediaType = "application/json;charset=UTF-8",
 									schema = @Schema(implementation = ErrorMessage.class)))
 			})
@@ -59,11 +64,15 @@ public class VagaController {
 	
 	@Operation(summary = "Localizar uma vaga", description = "Recurso para retornar uma vaga pelo seu codigo" +
 			"Requisição exige um bearer token. Acesso restrito a Role='ADMIN'",
+			security = @SecurityRequirement(name = "security"),
 			responses = {
 					@ApiResponse(responseCode = "200", description = "Recurso localizado",
 							content = @Content(mediaType = "application/json;charset=UTF-8",
 									schema = @Schema(implementation = VagaResponseDto.class))),
 					@ApiResponse(responseCode = "404", description = "Recurso não localizadas",
+							content = @Content(mediaType = "application/json;charset=UTF-8",
+									schema = @Schema(implementation = ErrorMessage.class))),
+					@ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de CLIENTE",
 							content = @Content(mediaType = "application/json;charset=UTF-8",
 									schema = @Schema(implementation = ErrorMessage.class)))
 			})
