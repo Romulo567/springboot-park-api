@@ -11,7 +11,7 @@ public class VagaCreateDto {
 	private String codigo;
 	
 	@NotBlank
-	@Pattern(regexp = "LIVRE | OCUPADA")
+	@Pattern(regexp = "LIVRE|OCUPADA")
 	private String status;
 
 	public VagaCreateDto() {

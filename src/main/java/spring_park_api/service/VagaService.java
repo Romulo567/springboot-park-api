@@ -14,7 +14,7 @@ import spring_park_api.repository.VagaRepository;
 public class VagaService {
 
 	@Autowired
-	VagaRepository vagaRepository;
+	private VagaRepository vagaRepository;
 	
 	@Transactional
 	public Vaga criar(Vaga vaga) {
