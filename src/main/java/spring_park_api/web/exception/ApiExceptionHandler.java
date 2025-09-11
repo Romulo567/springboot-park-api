@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import jakarta.servlet.http.HttpServletRequest;
+import spring_park_api.exception.CodigoUniqueViolationException;
 import spring_park_api.exception.CpfUniqueViolationException;
 import spring_park_api.exception.EntityNotFoundException;
 import spring_park_api.exception.PasswordInvalidException;
@@ -33,7 +34,7 @@ public class ApiExceptionHandler {
 				.body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Campo(s) invalido(s)", result));
 	}
 	
-	@ExceptionHandler({UserNameUniqueViolationException.class, CpfUniqueViolationException.class})
+	@ExceptionHandler({UserNameUniqueViolationException.class, CpfUniqueViolationException.class, CodigoUniqueViolationException.class})
 	public ResponseEntity<ErrorMessage> UniqueViolationException(RuntimeException ex, HttpServletRequest request){
 		log.error("Api Error - ", ex);
 		return ResponseEntity
