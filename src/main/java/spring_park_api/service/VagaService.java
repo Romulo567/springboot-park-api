@@ -34,7 +34,7 @@ public class VagaService {
 
 	@Transactional(readOnly = true)
 	public Vaga buscarPorVagaLivre() {
-		return vagaRepository.findFisrtByStatus(Vaga.StatusVaga.LIVRE).orElseThrow(
+		return vagaRepository.findFirstByStatus(Vaga.StatusVaga.LIVRE).orElseThrow(
 				() -> new EntityNotFoundException("Nenhuma vaga livre foi encontrada"));
 	}
 	

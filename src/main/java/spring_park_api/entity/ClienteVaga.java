@@ -53,7 +53,7 @@ public class ClienteVaga {
 	@Column(name = "valor", columnDefinition = "decimal(7, 2)")
 	private BigDecimal valor;
 	
-	@Column(name = "descontor", columnDefinition = "decimal(7, 2)")
+	@Column(name = "desconto", columnDefinition = "decimal(7, 2)")
 	private BigDecimal desconto;
 	
 	@ManyToOne
