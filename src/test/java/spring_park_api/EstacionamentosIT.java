@@ -44,4 +44,46 @@ public class EstacionamentosIT {
 						.jsonPath("dataEntrada").exists()
 						.jsonPath("vagaCodigo").exists();
 	}
+	
+	@Test
+	public void criarChekin_ComRoleCliente_RetornarErrorStatus403() {
+		EstacionamentoCreateDto createDto = EstacionamentoCreateDto.builder()
+						.placa("WER-1111").marca("FIAT").modelo("PALIO 1.0")
+						.cor("AZUL").clienteCpf("98133219035")
+						.build();
+		
+		testCliente
+						.post()
+						.uri("/api/v1/estacionamentos/checkin")
+						.contentType(MediaType.APPLICATION_JSON)
+						.headers(JwtAuthentication.getHeaderAuthorization(testCliente, "kelvin@gmail.com", "123456" ))
+						.bodyValue(createDto)
+						.exchange()
+						.expectStatus().isForbidden()
+						.expectBody()
+						.jsonPath("status").isEqualTo("403")
+						.jsonPath("path").isEqualTo("/api/v1/estacionamentos/checkin")
+						.jsonPath("method").isEqualTo("POST");
+	}
+	
+	@Test
+	public void criarChekin_ComDadosInvalids_RetornarErrorStatus422() {
+		EstacionamentoCreateDto createDto = EstacionamentoCreateDto.builder()
+						.placa("").marca("").modelo("")
+						.cor("").clienteCpf("")
+						.build();
+		
+		testCliente
+						.post()
+						.uri("/api/v1/estacionamentos/checkin")
+						.contentType(MediaType.APPLICATION_JSON)
+						.headers(JwtAuthentication.getHeaderAuthorization(testCliente, "kelvin@gmail.com", "123456" ))
+						.bodyValue(createDto)
+						.exchange()
+						.expectStatus().isEqualTo(422)
+						.expectBody()
+						.jsonPath("status").isEqualTo("422")
+						.jsonPath("path").isEqualTo("/api/v1/estacionamentos/checkin")
+						.jsonPath("method").isEqualTo("POST");
+	}
 }
