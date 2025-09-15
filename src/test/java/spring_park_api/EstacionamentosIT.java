@@ -86,4 +86,48 @@ public class EstacionamentosIT {
 						.jsonPath("path").isEqualTo("/api/v1/estacionamentos/checkin")
 						.jsonPath("method").isEqualTo("POST");
 	}
+	
+	@Test
+	public void criarChekin_ComCpfInexistente_RetornarErrorStatus404() {
+		EstacionamentoCreateDto createDto = EstacionamentoCreateDto.builder()
+				.placa("WER-1111").marca("FIAT").modelo("PALIO 1.0")
+				.cor("AZUL").clienteCpf("46113540081")
+				.build();
+		
+		testCliente
+						.post()
+						.uri("/api/v1/estacionamentos/checkin")
+						.contentType(MediaType.APPLICATION_JSON)
+						.headers(JwtAuthentication.getHeaderAuthorization(testCliente, "ana@gmail.com", "123456" ))
+						.bodyValue(createDto)
+						.exchange()
+						.expectStatus().isNotFound()
+						.expectBody()
+						.jsonPath("status").isEqualTo("404")
+						.jsonPath("path").isEqualTo("/api/v1/estacionamentos/checkin")
+						.jsonPath("method").isEqualTo("POST");
+	}
+	
+	@Sql(scripts = "/sql/estacionamentos/estacionamentos-insert-vagas-ocupadas.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+	@Sql(scripts = "/sql/estacionamentos/estacionamentos-delete-vagas-ocupadas.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+	@Test
+	public void criarChekin_ComVagasOcupadas_RetornarErrorStatus404() {
+		EstacionamentoCreateDto createDto = EstacionamentoCreateDto.builder()
+				.placa("WER-1111").marca("FIAT").modelo("PALIO 1.0")
+				.cor("AZUL").clienteCpf("98133219035")
+				.build();
+		
+		testCliente
+						.post()
+						.uri("/api/v1/estacionamentos/checkin")
+						.contentType(MediaType.APPLICATION_JSON)
+						.headers(JwtAuthentication.getHeaderAuthorization(testCliente, "ana@gmail.com", "123456" ))
+						.bodyValue(createDto)
+						.exchange()
+						.expectStatus().isNotFound()
+						.expectBody()
+						.jsonPath("status").isEqualTo("404")
+						.jsonPath("path").isEqualTo("/api/v1/estacionamentos/checkin")
+						.jsonPath("method").isEqualTo("POST");
+	}
 }
