@@ -100,6 +100,24 @@ public class EstacionamentoController {
 		return ResponseEntity.ok(dto);
 	}
 	
+	@Operation(summary = "Operação de checkout", description = "Recurso para dar saida de um veículo estacionado " +
+			"pelo numero do recibo. Requisição exige um bearer token. Acesso restrito a Role='ADMIN''",
+			security = @SecurityRequirement(name = "security"),
+			parameters = {
+					@Parameter(in = ParameterIn.PATH, name = "recibo", description = "Número do recibo gerado pelo checkin")
+			},
+			responses = {
+					@ApiResponse(responseCode = "200", description = "Recurso localizado com sucesso",
+							content = @Content(mediaType = "application/json;charset=UTF-8",
+									schema = @Schema(implementation = EstacionamentoResponseDto.class))),
+					@ApiResponse(responseCode = "404", description = "Número do recibo inexistente ou " +
+									"o veículo ja passou pelo checkout.", 
+							content = @Content(mediaType = "application/json;charset=UTF-8",
+									schema = @Schema(implementation = ErrorMessage.class))),
+					@ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de CLIENTE",
+							content = @Content(mediaType = "application/json;charset=UTF-8",
+									schema = @Schema(implementation = ErrorMessage.class)))
+			})
 	@PutMapping("/checkout/{recibo}")
 	@PreAuthorize("hasRole('ADMIN')" )
 	public ResponseEntity<EstacionamentoResponseDto> checkout(@PathVariable String recibo){
