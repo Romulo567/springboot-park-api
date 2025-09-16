@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -75,6 +77,20 @@ public class EstacionamentoController {
 		return ResponseEntity.created(location).body(responseDto);
 	}
 	
+	@Operation(summary = "Localizar um veículo estacionado", description = "Recurso para retornar um veículo estacionado " +
+			"pelo numero do recibo. Requisição exige um bearer token.'",
+			security = @SecurityRequirement(name = "security"),
+			parameters = {
+					@Parameter(in = ParameterIn.PATH, name = "recibo", description = "Número do recibo gerado pelo checkin")
+			},
+			responses = {
+					@ApiResponse(responseCode = "200", description = "Recurso localizado com sucesso",
+							content = @Content(mediaType = "application/json;charset=UTF-8",
+									schema = @Schema(implementation = EstacionamentoResponseDto.class))),
+					@ApiResponse(responseCode = "404", description = "Número do recibo não encontrado", 
+							content = @Content(mediaType = "application/json;charset=UTF-8",
+									schema = @Schema(implementation = ErrorMessage.class))),
+			})
 	@GetMapping("/checkin/{recibo}")
 	@PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE')" )
 	public ResponseEntity<EstacionamentoResponseDto> getByRecibo(@PathVariable String recibo){
