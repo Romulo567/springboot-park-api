@@ -130,4 +130,59 @@ public class EstacionamentosIT {
 						.jsonPath("path").isEqualTo("/api/v1/estacionamentos/checkin")
 						.jsonPath("method").isEqualTo("POST");
 	}
+	
+	@Test
+	public void buscarChekin_ComPerfilAdmin_RetornarDadosComStatus200() {
+
+		testCliente
+						.get()
+						.uri("/api/v1/estacionamentos/checkin/{recibo}", "20250313-101300")
+						.headers(JwtAuthentication.getHeaderAuthorization(testCliente, "ana@gmail.com", "123456" ))
+						.exchange()
+						.expectStatus().isOk()
+						.expectBody()
+						.jsonPath("placa").isEqualTo("FIT-1020")
+						.jsonPath("marca").isEqualTo("FIAT")
+						.jsonPath("modelo").isEqualTo("PALIO")
+						.jsonPath("cor").isEqualTo("VERDE")
+						.jsonPath("clienteCpf").isEqualTo("99012561000")
+						.jsonPath("recibo").isEqualTo("20250313-101300")
+						.jsonPath("dataEntrada").isEqualTo("2025-03-13 10:15:00")
+						.jsonPath("vagaCodigo").isEqualTo("A-01");
+	}
+	
+	@Test
+	public void buscarChekin_ComPerfilCliente_RetornarDadosComStatus200() {
+
+		testCliente
+						.get()
+						.uri("/api/v1/estacionamentos/checkin/{recibo}", "20250313-101300")
+						.headers(JwtAuthentication.getHeaderAuthorization(testCliente, "vitor@gmail.com", "123456" ))
+						.exchange()
+						.expectStatus().isOk()
+						.expectBody()
+						.jsonPath("placa").isEqualTo("FIT-1020")
+						.jsonPath("marca").isEqualTo("FIAT")
+						.jsonPath("modelo").isEqualTo("PALIO")
+						.jsonPath("cor").isEqualTo("VERDE")
+						.jsonPath("clienteCpf").isEqualTo("99012561000")
+						.jsonPath("recibo").isEqualTo("20250313-101300")
+						.jsonPath("dataEntrada").isEqualTo("2025-03-13 10:15:00")
+						.jsonPath("vagaCodigo").isEqualTo("A-01");
+	}
+	
+	@Test
+	public void buscarChekin_ComReciboInexistente_RetornarErrorComStatus404() {
+
+		testCliente
+						.get()
+						.uri("/api/v1/estacionamentos/checkin/{recibo}", "20250313-999999")
+						.headers(JwtAuthentication.getHeaderAuthorization(testCliente, "vitor@gmail.com", "123456" ))
+						.exchange()
+						.expectStatus().isNotFound()
+						.expectBody()
+						.jsonPath("status").isEqualTo("404")
+						.jsonPath("path").isEqualTo("/api/v1/estacionamentos/checkin/20250313-999999")
+						.jsonPath("method").isEqualTo("GET");
+	}
 }
