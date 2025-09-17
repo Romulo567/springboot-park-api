@@ -3,6 +3,10 @@ package spring_park_api.web.controller;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,11 +30,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import spring_park_api.entity.ClienteVaga;
+import spring_park_api.repository.projection.ClienteVagaProjection;
 import spring_park_api.service.ClienteVagaService;
 import spring_park_api.service.EstacionamentoService;
 import spring_park_api.web.dto.EstacionamentoCreateDto;
 import spring_park_api.web.dto.EstacionamentoResponseDto;
+import spring_park_api.web.dto.PageableDto;
 import spring_park_api.web.dto.mapper.ClienteVagaMapper;
+import spring_park_api.web.dto.mapper.PageableMapper;
 import spring_park_api.web.exception.ErrorMessage;
 
 @Tag(name = "Estacionamentos", description = "Operações de registro de entrada e saida de um veículo do estacionamento.")
@@ -123,6 +130,15 @@ public class EstacionamentoController {
 	public ResponseEntity<EstacionamentoResponseDto> checkout(@PathVariable String recibo){
 		ClienteVaga clienteVaga = estacionamentoService.checkout(recibo);
 		EstacionamentoResponseDto dto = ClienteVagaMapper.toDto(clienteVaga);
+		return ResponseEntity.ok(dto);
+	}
+	
+	@GetMapping("/cpf/{cpf}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<PageableDto> getAllEstacionamentosPorCpf(@PathVariable String cpf, 
+																															 @PageableDefault(size = 5, sort = "dataEntrada", direction = Sort.Direction.ASC ) Pageable pageable){
+		Page<ClienteVagaProjection> projection = clienteVagaService.buscarTodosPorClienteCpf(cpf, pageable);
+		PageableDto dto = PageableMapper.toDto(projection);
 		return ResponseEntity.ok(dto);
 	}
 }
