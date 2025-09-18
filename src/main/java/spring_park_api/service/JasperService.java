@@ -2,7 +2,6 @@ package spring_park_api.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Locale;
@@ -38,7 +37,7 @@ public class JasperService {
 	
 	public void addParams(String key, Object value) {
 		this.params.put("IMAGEM_DIRETORIO", JASPER_DIRETORIO);
-		this.params.put("REPORT_LOCALE", new Locale("pt", "BR"));
+		this.params.put("REPORT_LOCALE", Locale.forLanguageTag("pt-BR"));
 		this.params.put(key, value);
 	}
 	
