@@ -88,6 +88,6 @@ Após iniciar a aplicação, você pode acessar a documentação completa e inte
 |--------|--------------------------------------|--------------------------------------|-----------------|
 | `POST` | `/api/v1/usuarios`                   | Cria um novo usuário.                | `ROLE_ADMIN`    |
 | `POST` | `/api/v1/auth`                       | Autentica um usuário e retorna um JWT. | Público         |
-| `POST` | `/api/v1/clientes`                   | Cria um novo cliente.                | `ROLE_ADMIN`    |
+| `POST` | `/api/v1/clientes`                   | Cria um novo cliente.                | `ROLE_CLIENTE`    |
 | `POST` | `/api/v1/estacionamento/check-in`    | Realiza o check-in de um veículo.    | `ROLE_CLIENTE`  |
 | `GET`  | `/api/v1/estacionamento/{recibo}`    | Consulta os dados de um check-in.    | `ROLE_ADMIN`    |
