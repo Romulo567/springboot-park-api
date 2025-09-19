@@ -35,7 +35,7 @@ public class VagaService {
 	@Transactional(readOnly = true)
 	public Vaga buscarPorVagaLivre() {
 		return vagaRepository.findFirstByStatus(Vaga.StatusVaga.LIVRE).orElseThrow(
-				() -> new VagaDisponivelException("Nenhuma vaga livre foi encontrada"));
+				() -> new VagaDisponivelException());
 	}
 	
 }

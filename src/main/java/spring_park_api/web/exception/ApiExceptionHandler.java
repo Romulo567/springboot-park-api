@@ -19,6 +19,7 @@ import spring_park_api.exception.CodigoUniqueViolationException;
 import spring_park_api.exception.CpfUniqueViolationException;
 import spring_park_api.exception.EntityNotFoundException;
 import spring_park_api.exception.PasswordInvalidException;
+import spring_park_api.exception.ReciboCheckinNotFoundException;
 import spring_park_api.exception.UserNameUniqueViolationException;
 import spring_park_api.exception.VagaDisponivelException;
 import spring_park_api.jwt.JwtAuthenticationEntryPoint;
@@ -31,6 +32,16 @@ public class ApiExceptionHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationEntryPoint.class);
 	
+	
+	@ExceptionHandler(ReciboCheckinNotFoundException.class)
+	public ResponseEntity<ErrorMessage> reciboCheckinNotFoundException(ReciboCheckinNotFoundException ex, HttpServletRequest request){
+		Object[] params =  {ex.getRecibo()};
+		String message = messageSource.getMessage("exception.reciboCheckinNotFoundException", params, request.getLocale());
+		return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(new ErrorMessage(request, HttpStatus.NOT_FOUND, message));
+	}
 	
 	@ExceptionHandler(EntityNotFoundException.class)
 	public ResponseEntity<ErrorMessage> entityNotFoundException(EntityNotFoundException ex, HttpServletRequest request){
@@ -72,11 +83,11 @@ public class ApiExceptionHandler {
 	
 	@ExceptionHandler(VagaDisponivelException.class)
 	public ResponseEntity<ErrorMessage> VagaDisponivelException(RuntimeException ex, HttpServletRequest request){
-		log.error("Api Error - ", ex);
+		String message = messageSource.getMessage("exception.vagaDisponivelException", null, request.getLocale());
 		return ResponseEntity
 				.status(HttpStatus.NOT_FOUND)
 				.contentType(MediaType.APPLICATION_JSON)
-				.body(new ErrorMessage(request, HttpStatus.NOT_FOUND, ex.getMessage()));
+				.body(new ErrorMessage(request, HttpStatus.NOT_FOUND, message));
 	}
 	
 	@ExceptionHandler(PasswordInvalidException.class)

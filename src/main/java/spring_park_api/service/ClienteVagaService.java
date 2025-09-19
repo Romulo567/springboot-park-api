@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import spring_park_api.entity.ClienteVaga;
-import spring_park_api.exception.EntityNotFoundException;
+import spring_park_api.exception.ReciboCheckinNotFoundException;
 import spring_park_api.repository.ClienteVagaRepository;
 import spring_park_api.repository.projection.ClienteVagaProjection;
 
@@ -25,7 +25,7 @@ public class ClienteVagaService {
 	@Transactional(readOnly = true)
 	public ClienteVaga buscarPorRecibo(String recibo) {
 		return repository.findByReciboAndDataSaidaIsNull(recibo).orElseThrow(
-				() -> new EntityNotFoundException(String.format("Recibo '%s' não encontrado no sistema ou checkout ja realizado", recibo)));
+				() -> new ReciboCheckinNotFoundException(recibo));
 	}
 
 	@Transactional(readOnly = true)
