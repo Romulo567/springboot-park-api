@@ -20,6 +20,7 @@ import spring_park_api.exception.CpfUniqueViolationException;
 import spring_park_api.exception.EntityNotFoundException;
 import spring_park_api.exception.PasswordInvalidException;
 import spring_park_api.exception.UserNameUniqueViolationException;
+import spring_park_api.exception.VagaDisponivelException;
 import spring_park_api.jwt.JwtAuthenticationEntryPoint;
 
 @RestControllerAdvice
@@ -30,6 +31,27 @@ public class ApiExceptionHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationEntryPoint.class);
 	
+	
+	@ExceptionHandler(EntityNotFoundException.class)
+	public ResponseEntity<ErrorMessage> entityNotFoundException(EntityNotFoundException ex, HttpServletRequest request){
+		Object[] params =  {ex.getRecurso(), ex.getCodigo()};
+		String message = messageSource.getMessage("exception.entityNotFoundException", params, request.getLocale());
+		return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(new ErrorMessage(request, HttpStatus.NOT_FOUND, message));
+	}
+	
+	@ExceptionHandler(CodigoUniqueViolationException.class)
+	public ResponseEntity<ErrorMessage> codigoUniqueViolationException(CodigoUniqueViolationException ex, HttpServletRequest request){
+		Object[] params =  {ex.getRecurso(), ex.getCodigo()};
+		String message = messageSource.getMessage("exception.codigoUniqueViolationException", params, request.getLocale());
+		return ResponseEntity
+				.status(HttpStatus.CONFLICT)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(new ErrorMessage(request, HttpStatus.CONFLICT, message));
+	}
+	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorMessage> methodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request, BindingResult result){
 		log.error("Api Error - ", ex);
@@ -39,7 +61,7 @@ public class ApiExceptionHandler {
 				.body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, messageSource.getMessage("message.invalid.field", null, request.getLocale()), result, messageSource));
 	}
 	
-	@ExceptionHandler({UserNameUniqueViolationException.class, CpfUniqueViolationException.class, CodigoUniqueViolationException.class})
+	@ExceptionHandler({UserNameUniqueViolationException.class, CpfUniqueViolationException.class})
 	public ResponseEntity<ErrorMessage> UniqueViolationException(RuntimeException ex, HttpServletRequest request){
 		log.error("Api Error - ", ex);
 		return ResponseEntity
@@ -48,8 +70,8 @@ public class ApiExceptionHandler {
 				.body(new ErrorMessage(request, HttpStatus.CONFLICT, ex.getMessage()));
 	}
 	
-	@ExceptionHandler(EntityNotFoundException.class)
-	public ResponseEntity<ErrorMessage> entityNotFoundException(RuntimeException ex, HttpServletRequest request){
+	@ExceptionHandler(VagaDisponivelException.class)
+	public ResponseEntity<ErrorMessage> VagaDisponivelException(RuntimeException ex, HttpServletRequest request){
 		log.error("Api Error - ", ex);
 		return ResponseEntity
 				.status(HttpStatus.NOT_FOUND)
